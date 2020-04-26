@@ -24,11 +24,38 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-	std::string filename = argv[1];
-	//std::cout << argv[1];
-	Ordlista ord{ filename };
-	ord.Print_Vector(9);
+		std::string filename = argv[1];
+		Ordlista ord{ filename };
+		if (argoutput == "-o")
+		{
+			std::cout << "here";
+			try
+			{
+				std::string strr = argv[3];
+				int N = std::stoi(strr);
+				if (N >= 0)
+				{
+					ord.Print_Vector(N);
+				}
+				else 
+				{
+					throw N;
+				}
+			}
+			catch (...)
+			{
+				std::cout << "N argument missing or invalid.\n";
+				std::cout << "Usage: a.out FILE [-a] [-f] [-o N] \n ";
+			}
+		}
+		else if (argoutput == "-a")
+		{
+			ord.Print_Ordered();
+		}
+		else if (argoutput == "-f")
+		{
+			ord.Print_Freq();
+		}
 	}
-	
 	return 0;
 }

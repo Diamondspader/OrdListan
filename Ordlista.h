@@ -12,10 +12,11 @@ class Ordlista
 {
 public:
 
-	
+	typedef std::pair<std::string, int> strInt;
 	Ordlista(const std::string & file_n);
 	~Ordlista() {}
 	void Print_Ordered();
+	void Print_Freq();
 	void Print_Vector(int limiter);
 	
 

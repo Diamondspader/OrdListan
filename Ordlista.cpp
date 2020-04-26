@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <unordered_map>
 #include <map>
+#include <iomanip>
+#include <stdlib.h> 
 
 
 
@@ -111,6 +113,7 @@ void Ordlista::Insert_File()
 			print_order.push_back(t);
 			ordered[t]++;
 		}
+
 	}
 	else 
 	{
@@ -119,12 +122,51 @@ void Ordlista::Insert_File()
 }
 
 
-void Ordlista::Print_Ordered() 
+void Ordlista::Print_Ordered()
 {
-	for (auto t : ordered) 
+	unsigned int longest_word{0};
+	std::vector<strInt> output;
+	output.reserve(ordered.size());
+	
+	std::transform(ordered.begin(), ordered.end(), back_inserter(output), [&](const strInt& pair) 
+	{	
+	if(pair.first.length() > longest_word)
 	{
-		std::cout << t.first << " : " << t.second  << '\n';
+		longest_word = pair.first.length();
 	}
+	return pair; });
+		
+		
+		std::transform(ordered.begin(), ordered.end(), std::ostream_iterator<std::string>(std::cout, "\n"), [&](const strInt& a)
+		{
+			std::stringstream ss;
+			int width_length =  2 * longest_word - (int)a.first.length()+2;
+			ss << a.first << std::setw(width_length) << std::setfill(' ') << a.second;
+			return ss.str();
+		});
+}
+
+void Ordlista::Print_Freq() 
+{
+	unsigned int longest_word{ 0 };
+	std::vector<strInt> output;
+	output.reserve(ordered.size());
+	
+	std::transform(ordered.begin(), ordered.end(), back_inserter(output), [&](const strInt& pair) {
+		if(pair.first.length() > longest_word){
+			longest_word = pair.first.length();
+		}
+		return pair; });
+	
+	std::sort(output.begin(), output.end(), [&](const strInt& a, const strInt& b) { return a.second > b.second; });
+
+	std::transform(output.begin(), output.end(), std::ostream_iterator<std::string>(std::cout, "\n"), [&](const strInt& a)
+		{
+			std::stringstream ss;
+
+			ss <<std::setw(longest_word) << std::setfill(' ')<< a.first << std::setw(2) << std::setfill(' ') << a.second;
+			return ss.str();
+		});
 }
 
 void Ordlista::Print_Vector(int limiter)
