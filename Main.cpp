@@ -1,3 +1,13 @@
+// Information om komplettering:
+//   Siffrorna hänvisar till rättningsprotokollet som finns på
+//   kurshemsidan -> laboration -> "UPP-gruppens gemensamma rättningsprotokoll"
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//   Har ni frågor om kompletteringen kan ni maila mig på:
+//   eriek993@student.liu.se
+
+//Komplettering: inget korrekt felmedelande om flagga saknas.
 
 #include <iostream>
 #include <fstream>
