@@ -13,12 +13,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <iterator> 
-#include <map> 
+#include <iterator>
+#include <map>
+#include <vector>
 #include <cctype>
 #include "Ordlista.h"
 int main(int argc, char *argv[])
-{ 
+{
 
     std::cout << "Begin of file \n";
 	std::string argoutput = argv[2];
@@ -28,7 +29,7 @@ int main(int argc, char *argv[])
 	}
 	else if (  argoutput!="-a" && argoutput!="-f" && argoutput!="-o")
 	{
-		
+
 	std::cout << "Second argument missing or invalid.\n";
 	std::cout << "Usage: a.out FILE [-a] [-f] [-o N] \n ";
 	}
@@ -38,7 +39,6 @@ int main(int argc, char *argv[])
 		Ordlista ord{ filename };
 		if (argoutput == "-o")
 		{
-			std::cout << "here";
 			try
 			{
 				std::string strr = argv[3];
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 				{
 					ord.Print_Vector(N);
 				}
-				else 
+				else
 				{
 					throw N;
 				}
@@ -60,6 +60,11 @@ int main(int argc, char *argv[])
 		}
 		else if (argoutput == "-a")
 		{
+      //test
+std::string word = std::max_element(ordered.begin(),ordered.end());
+std::cout
+
+      //test
 			ord.Print_Ordered();
 		}
 		else if (argoutput == "-f")

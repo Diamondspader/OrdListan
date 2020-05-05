@@ -20,104 +20,93 @@ Ordlista::Ordlista(const std::string & file_n) :
 }
 
 
+bool CleanWord(std::string & wash_word)
+{
+	std::string alpha_check{"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ"};
+	std::size_t found_first_alpha = wash_word.find_first_of(alpha_check);
+
+	//checks first part of junks characters
+	if (found_first_alpha == std::string::npos)
+	{
+			return false;
+	}
+
+	if (found_first_alpha >= 1)
+	{
+			std::string tmp = wash_word.substr(0, found_first_alpha);
+			std::size_t not_accepted_char = tmp.find_first_not_of("\"(\'");
+
+			if (not_accepted_char != std::string::npos)
+			{
+					return false;
+			}
+			wash_word = wash_word.substr(found_first_alpha, wash_word.size());
+	}
+
+//checks last part of junks characters
+	std::size_t find_first_junk = t.find_first_not_of(alpha_check + "-" + "'");
+
+	if(find_first_junk != std::string::npos)
+	{
+			std::string tmp_2 = wash_word.substr(find_first_junk, wash_word.size());
+			std::size_t not_accepted_char = tmp_2.find_first_not_of(")!;:,.?\'\"");
+			if (not_accepted_char != std::string::npos)
+			{
+				return false;
+			}
+			std::size_t find_last_alpha = wash_word.find_last_of(alpha_check);
+
+			wash_word = wash_word.substr(0, find_last_alpha+1);
+
+	}
+
+	//check if "'s'"  is at the end
+	std::size_t apostrophe = wash_word.find("\'");
+	if (apostrophe != std::string::npos)
+	{
+
+			if  ( (apostrophe == wash_word.size()-2))
+			{
+					if (wash_word.back() == 's' || wash_word.back() == 'S')
+					{
+							wash_word = wash_word.substr(0, apostrophe);
+					}
+			}
+			else
+			{
+					return false;
+			}
+	}
+
+	// om binde ligger sist eller direkt efter en binde eller mindre än 3.
+	std::size_t double_dash = wash_word.find("--");
+	if (double_dash != std::string::npos || wash_word.back() == '-' || wash_word.size() < 3)
+	{
+			return false;
+	}
+
+	return true;
+}
+
 void Ordlista::Insert_File()
 {
-	std::string alpha_check = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
 
 	iss.open(file_name, std::ifstream::in);
 	if (iss.is_open())
 	{
 
-		//std::istringstream iss(tmp);
-		std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss},
-				 std::istream_iterator<std::string>{} };
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss},
+					 std::istream_iterator<std::string>{} };
 
-		//Komplettering: en stor loop för hela progammet är inte okej.
-		//               loopen får användas på ett specifikt ställe.
-		for (auto& t : tokens)
-		{
-		  //Kommentar: kolla på funktionen "is_alpha()"
-			std::size_t found_first_alpha = t.find_first_of(alpha_check);
 
-			//checks first part of junks characters
-			if (found_first_alpha == std::string::npos)
+			std::transform(tokens.begin(), tokens.end(), back_inserter(print_order), [&](const std::string & str)
 			{
-				//std::cout << "\n NOT AN ACCEPTED WORD \n";
-				continue;
-			}
-			if (found_first_alpha >= 1)
-			{
-				std::string tmp = t.substr(0, found_first_alpha);
-				std::size_t not_accepted_char = tmp.find_first_not_of("\"(\'");
-
-				if (not_accepted_char != std::string::npos)
-				{
-					//std::cout << "\n NOT AN ACCEPTED WORD \n";
-					continue;
-				}
-				t = t.substr(found_first_alpha, t.size());
-			}
-
-			//checks last part of junk characters
-			std::size_t find_first_junk = t.find_first_not_of(alpha_check + "-" + "'");
-			if (find_first_junk != std::string::npos)
-				{
-					std::string tmp_2 = t.substr(find_first_junk, t.size());
-					std::size_t not_accepted_char = tmp_2.find_first_not_of(")!;:,.?\'\"");
-					if (not_accepted_char != std::string::npos)
+					if(cleanWord(str))
 					{
-					//std::cout << "\n NOT AN ACCEPTED WORD \n";
-					continue;
+							ordered[str]++;
+							return str;
 					}
-					//hej's''''''
-					std::size_t find_last_alpha = t.find_last_of(alpha_check);
-
-					t = t.substr(0, find_last_alpha+1);
-
-				}
-			//check if potential word    minst 3 tecken
-			std::size_t apostrophe = t.find("\'");
-			if (apostrophe != std::string::npos)
-			{
-
-				if  ( (apostrophe == t.size()-2))
-				{
-					if (t.back() == 's' || t.back() == 'S')
-					{
-						t = t.substr(0, apostrophe);
-					}
-				}
-				else
-				{
-					continue;
-				}
 			}
-
-			std::size_t double_dash = t.find("--");
-			if (double_dash != std::string::npos)
-			{
-				continue;
-			}
-			if(t.back() == '-')
-			{
-				continue;
-			}
-			// om binde ligger sist eller direkt efter en binde.
-
-			if (t.size() < 3)
-			{
-				continue;
-			}
-
-
-			std::transform(t.begin(), t.end(), t.begin(), [](unsigned char c) { return std::tolower(c); });
-
-
-
-			print_order.push_back(t);
-			ordered[t]++;
-		}
-
 	}
 	else
 	{
@@ -133,6 +122,8 @@ void Ordlista::Print_Ordered()
 	std::vector<strInt> output;
 	output.reserve(ordered.size());
 
+
+
 	std::transform(ordered.begin(), ordered.end(), back_inserter(output), [&](const strInt& pair)
 	{
 	if(pair.first.length() > longest_word)
@@ -140,7 +131,7 @@ void Ordlista::Print_Ordered()
 		longest_word = pair.first.length();
 	}
 	return pair; });
-
+//std::string word = std::max_element(ordered.begin(),ordered.end());
 
 		std::transform(ordered.begin(), ordered.end(), std::ostream_iterator<std::string>(std::cout, "\n"), [&](const strInt& a)
 		{
@@ -153,6 +144,8 @@ void Ordlista::Print_Ordered()
 			return ss.str();
 		});
 }
+
+
 
 void Ordlista::Print_Freq()
 {
