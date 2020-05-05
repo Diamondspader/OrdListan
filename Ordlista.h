@@ -22,8 +22,8 @@ public:
 
 private:
 	void Insert_File();
-	std::map<std::string, int> ordered;
-	std::vector <std::string> print_order;
+	std::map<std::string, int> ordered{};
+	std::vector <std::string> print_order{};
 	std::ifstream iss{};
 	std::string file_name{};
 
